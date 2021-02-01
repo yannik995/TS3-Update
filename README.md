@@ -7,6 +7,7 @@ Server Directory Named "teamspeak3-server_linux_amd64"
 Run the script in the directory where the server's directory is located.
 
 for example:
+
     /home/ts3/teamspeak3-server_linux_amd64/{TS3 server files}
     /home/ts3/ts3update.sh (This Script)
 
