@@ -18,6 +18,6 @@ for example:
 
 Run:
 
-    wget -Nnv https://raw.githubusercontent.com/yannik995/TS3-Update/main/ts3update.sh && chmod +x update.sh; ./update.sh
+    wget -Nnv https://github.com/yannik995/TS3-Update/releases/download/1.0.1/ts3update.sh && chmod +x update.sh; ./update.sh
 
 Add a crontab that will start the script regularly.
