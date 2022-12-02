@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-VERSION="version.txt"
+VERSION_FILE="version.txt"
+CURRENT_VERISON="$(cat $VERSION_FILE)"
+USER="ts3"
 
 function getLatestTS3Version() {
         TS3_SERVER_VERSION="";
@@ -16,7 +18,6 @@ function getLatestTS3Version() {
 
                         if [[ $? == 0 ]]; then
                                 TS3_SERVER_VERSION="$release"
-                                # Found
                                 break
                         fi
                 done < RELEASES.txt
@@ -34,25 +35,26 @@ function getLatestTS3Version() {
 TS3_SERVER_VERSION="$(getLatestTS3Version)";
 
 if [[ -n "$TS3_SERVER_VERSION" ]] && [[ "$TS3_SERVER_VERSION" != "0" ]]; then
-        #echo -n "$TS3_SERVER_VERSION";
+        echo "latest Version: $TS3_SERVER_VERSION";
 
-        if [ "$TS3_SERVER_VERSION" == "$(cat $VERSION)" ] ;then
-                echo "No Update"
+        if [ "$TS3_SERVER_VERSION" == "$CURRENT_VERISON" ] ;then
+                echo "No Update: current version $CURRENT_VERISON"
         else
-                echo "New Version $TS3_SERVER_VERSION"
+                echo "Update $CURRENT_VERISON => $TS3_SERVER_VERSION"
                 wget -O ts3.tar.bz2 "https://files.teamspeak-services.com/releases/server/${TS3_SERVER_VERSION}/teamspeak3-server_linux_amd64-${TS3_SERVER_VERSION}.tar.bz2"
                 if [ $? -eq 0 ]; then
                         echo "Stop TS3"
 
-                        ./teamspeak3-server_linux_amd64/ts3server_startscript.sh stop
-                        echo "Entpacke"
-                        tar -xjf ts3.tar.bz2
-                        
+                        /etc/init.d/teamspeak stop
+                        echo "Unpack"
+                        tar -xjf ts3.tar.bz2 --owner=$USER
+
                         echo "Start TS3"
-                        ./teamspeak3-server_linux_amd64/ts3server_startscript.sh start
-                        
-                        #Save Version
-                        echo "$TS3_SERVER_VERSION" > $VERSION
+                        /etc/init.d/teamspeak start
+
+                        echo "$TS3_SERVER_VERSION" > $VERSION_FILE
+
+						rm ts3.tar.bz2
                 else
                         echo "Downlod failed. Please check version"
                 fi
