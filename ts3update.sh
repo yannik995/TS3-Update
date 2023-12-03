@@ -5,7 +5,7 @@ VERSION="version.txt"
 function getLatestTS3Version() {
         TS3_SERVER_VERSION="";
         if [[ -z "${TS3_SERVER_VERSION}" ]]; then
-                wget -t 1 -T 3 'https://files.teamspeak-services.com/releases/server/' -q -O - | grep -Ei 'a href="[0-9]+' | grep -Eo ">(.*)<" | tr -d ">" | tr -d "<" | uniq | sort -V -r > RELEASES.txt
+                wget -t 1 -T 3 'https://www.teamspeak.com/versions/server.json' -q -O - | jq -r '.linux.x86_64.version' > RELEASES.txt
 
                 if [[ $? -ne 0 ]]; then
                         return 1;
@@ -37,6 +37,7 @@ if [[ -n "$TS3_SERVER_VERSION" ]] && [[ "$TS3_SERVER_VERSION" != "0" ]]; then
         #echo -n "$TS3_SERVER_VERSION";
 
         if [ "$TS3_SERVER_VERSION" == "$(cat $VERSION)" ] ;then
+                echo "$TS3_SERVER_VERSION";
                 echo "No Update"
         else
                 echo "New Version $TS3_SERVER_VERSION"
@@ -59,5 +60,5 @@ if [[ -n "$TS3_SERVER_VERSION" ]] && [[ "$TS3_SERVER_VERSION" != "0" ]]; then
         fi
 
 else
-        return "Can not detect Version";
+        echo "Can not detect Version";
 fi
